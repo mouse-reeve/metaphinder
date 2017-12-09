@@ -4,7 +4,6 @@ import json
 import random
 import re
 import settings
-import time
 from urllib.parse import urlencode
 from urllib.request import Request, urlopen
 
@@ -38,8 +37,9 @@ def build_metaphor(adjective):
 
         # detect a "my/the __ is green" pattern
         articles = r'\b|\b'.join(['my', 'his', 'her', 'a', 'an', 'the'])
-        regex = re.compile(r'(\b%s\b) ([a-z\s]{1,15}) %s' % (articles, prompt),
-                           re.I)
+        regex = re.compile(
+            r'(\b%s\b) (((?!\bwho\b|\bthat\b).){1,15}) %s' % (articles, prompt),
+            re.I)
         match = re.search(regex, text)
         if match and len(match.groups()) > 1:
             nouns.append(match.groups())
@@ -51,14 +51,13 @@ def build_metaphor(adjective):
             break
 
     # build the sentence
-    sentences = [
-        '{the1} {noun1} is as {adj} as {the2} {noun2}',
-        '{the1} {noun1} is like {the2} {noun2} -- {adj}',
-        '{the1} {noun1} is like {the2} {noun2}: {adj}',
-        '{the1} {noun1} is {adj} like {the2} {noun2}',
-        '{the1} {noun1} is {the2} {noun2}, {the2} %s{adj} {noun2}' % \
-            random.choice(['eternally ', 'ever-', 'always-']),
-    ]
+    sentences = ['{the1} {noun1} is as {adj} as {the2} {noun2}'] * 5 + \
+        ['{the1} {noun1} is like {the2} {noun2} -- {adj}'] * 5 + \
+        ['{the1} {noun1} is like {the2} {noun2}: {adj}'] * 5 + \
+        ['{the1} {noun1} is {adj} like {the2} {noun2}'] * 3 + \
+        ['{the1} {noun1} is {the2} {noun2}, {the2} %s{adj} {noun2}' % \
+            random.choice(['eternally ', 'ever-', 'always-'])]
+
     if len(nouns) >= 2:
         # prioritize definite articles
         if nouns[0][0] in ['a', 'an'] or nouns[1][0] in ['my', 'his', 'her']:
@@ -75,7 +74,7 @@ def build_metaphor(adjective):
     return False
 
 
-def get_adjective():
+def get_adjectives():
     ''' get a random adjective from wordnik '''
     data = {
         'hasDictionaryDef': True,
@@ -86,15 +85,16 @@ def get_adjective():
         'maxDictionaryCount': -1,
         'minLength': 4,
         'maxLength': -1,
+        'limit': 20,
         'api_key': settings.WORDNIK_KEY
     }
 
     params = urlencode(data)
     response = urlopen(Request(
-        'http://api.wordnik.com:80/v4/words.json/randomWord?' + params))
+        'http://api.wordnik.com:80/v4/words.json/randomWords?' + params))
     response = json.loads(response.read().decode("utf-8"))
-    adjective = response['word']
-    return adjective
+    adjectives = [r['word'] for r in response]
+    return adjectives
 
 
 def post_tweet():
@@ -103,21 +103,19 @@ def post_tweet():
     print(datetime.today().isoformat())
 
     text = False
-    attempts = 0
-    while not text and attempts < 10:
-        attempts += 1
-        adjective = get_adjective()
+    adjectives = get_adjectives()
+    for adjective in adjectives:
         print('attempting to use adjective: ' + adjective)
         text = build_metaphor(adjective)
-        if not text:
-            # poor man's rate limiting
-            time.sleep(2)
+        if text:
+            break
     print(text)
 
-    print('--------- posting tweet --------')
-    r = API.request('statuses/update', {'status': text})
-    print(r.response)
-    print('--------------------------------')
+    if text:
+        print('--------- posting tweet ---------')
+        #r = API.request('statuses/update', {'status': text})
+        #print(r.response)
+        print('---------------------------------')
 
 
 if __name__ == '__main__':
