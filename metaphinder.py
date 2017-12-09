@@ -16,16 +16,25 @@ API = TwitterAPI(settings.API_KEY, settings.API_SECRET,
 def build_metaphor(adjective):
     ''' create a comparison sentence based on tweets '''
     # pick an adjective around which to build the comparison
-    prompt = 'is %s' % adjective
+    verbs = ['is', 'was', 'are']
+    prompt = ' OR '.join('"%s %s"' % (v, adjective) for v in verbs)
 
     nouns = []
     # find structurally compatible tweets that use the adjective
     tweets = API.request('search/tweets', {
-        'q': '"%s"' % prompt,
+        'q': prompt,
         'count': 100,
         'lang': 'en',
         'result_type': 'recent',
     })
+
+    articles = r'\b|\b'.join(['my', 'his', 'her', 'a', 'an', 'the'])
+    verbs = r'\b|\b'.join(verbs)
+    regex = re.compile(
+        r'(\b%s\b) (((?!\bwho\b|\bthat\b).){1,15}) (\b%s\b) %s' % \
+                (articles, verbs, adjective),
+        re.I)
+    used_nouns = []
     for tweet in tweets:
         if not 'text' in tweet:
             continue
@@ -35,42 +44,47 @@ def build_metaphor(adjective):
         if blacklist.check_blacklist(text):
             continue
 
-        # detect a "my/the __ is green" pattern
-        articles = r'\b|\b'.join(['my', 'his', 'her', 'a', 'an', 'the'])
-        regex = re.compile(
-            r'(\b%s\b) (((?!\bwho\b|\bthat\b).){1,15}) %s' % (articles, prompt),
-            re.I)
+        # detect a "my/the __ is/are green" pattern
         match = re.search(regex, text)
-        if match and len(match.groups()) > 1:
-            nouns.append(match.groups())
+        if match:
+            groups = match.groups()
+            if len(match.groups()) < 4 or groups[1] in used_nouns:
+                continue
+            nouns.append({
+                'the': groups[0],
+                'noun': groups[1],
+                'is': groups[3],
+            })
+            used_nouns.append(groups[1])
 
-        # deduplicate entries to avoid super common things like
-        # "my heart is broken" over and over
-        nouns = list(set(nouns))
+            # deduplicate entries to avoid super common things like
+            # "my heart is broken" over and over
         if len(nouns) == 2:
             break
 
     # build the sentence
-    sentences = ['{the1} {noun1} is as {adj} as {the2} {noun2}'] * 5 + \
-        ['{the1} {noun1} is like {the2} {noun2} -- {adj}'] * 5 + \
-        ['{the1} {noun1} is like {the2} {noun2}: {adj}'] * 5 + \
-        ['{the1} {noun1} is {adj} like {the2} {noun2}'] * 3 + \
-        ['{the1} {noun1} is {the2} {noun2}, {the2} %s{adj} {noun2}' % \
+    sentences = ['{the1} {noun1} {is1} as {adj} as {the2} {noun2}'] * 5 + \
+        ['{the1} {noun1} {is1} like {the2} {noun2} -- {adj}'] * 5 + \
+        ['{the1} {noun1} {is1} like {the2} {noun2}: {adj}'] * 5 + \
+        ['{the1} {noun1} {is1} {adj} like {the2} {noun2}'] * 3 + \
+        ['{the1} {noun1} {is1} {the2} {noun2}, {the2} %s{adj} {noun2}' % \
             random.choice(['eternally ', 'ever-', 'always-'])]
 
     if len(nouns) >= 2:
         # prioritize definite articles
-        if nouns[0][0] in ['a', 'an'] or nouns[1][0] in ['my', 'his', 'her']:
+        if nouns[0]['the'] in ['a', 'an'] or \
+                nouns[1]['the'] in ['my', 'his', 'her']:
             nouns = nouns[::-1]
 
         result = random.choice(sentences).format(
-            the1=nouns[0][0],
-            noun1=nouns[0][1],
-            the2=nouns[1][0].lower(),
-            noun2=nouns[1][1],
+            the1=nouns[0]['the'],
+            noun1=nouns[0]['noun'],
+            is1=nouns[0]['is'],
+            the2=nouns[1]['the'].lower(),
+            noun2=nouns[1]['noun'],
+            is2=nouns[1]['is'],
             adj=adjective)
         return result
-
     return False
 
 
@@ -109,12 +123,12 @@ def post_tweet():
         text = build_metaphor(adjective)
         if text:
             break
-    print(text)
 
     if text:
+        print(text)
         print('--------- posting tweet ---------')
-        #r = API.request('statuses/update', {'status': text})
-        #print(r.response)
+        r = API.request('statuses/update', {'status': text})
+        print(r.response)
         print('---------------------------------')
 
 
