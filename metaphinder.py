@@ -30,9 +30,10 @@ def build_metaphor(adjective):
 
     articles = r'\b|\b'.join(['my', 'his', 'her', 'a', 'an', 'the'])
     verbs = r'\b|\b'.join(verbs)
+    exclude = r'\b|\b'.join(['who', 'that', 'but'])
     regex = re.compile(
-        r'(\b%s\b) (((?!\bwho\b|\bthat\b).){1,15}) (\b%s\b) %s' % \
-                (articles, verbs, adjective),
+        r'(\b%s\b) (((?!\b%s\b).){1,15}) (\b%s\b) %s' % \
+                (articles, exclude, verbs, adjective),
         re.I)
     used_nouns = []
     for tweet in tweets:
@@ -48,6 +49,9 @@ def build_metaphor(adjective):
         match = re.search(regex, text)
         if match:
             groups = match.groups()
+
+            # detect duplicate entries to avoid super common things like
+            # "my heart is broken" over and over
             if len(match.groups()) < 4 or groups[1] in used_nouns:
                 continue
             nouns.append({
@@ -57,8 +61,6 @@ def build_metaphor(adjective):
             })
             used_nouns.append(groups[1])
 
-            # deduplicate entries to avoid super common things like
-            # "my heart is broken" over and over
         if len(nouns) == 2:
             break
 
@@ -127,8 +129,8 @@ def post_tweet():
     if text:
         print(text)
         print('--------- posting tweet ---------')
-        r = API.request('statuses/update', {'status': text})
-        print(r.response)
+        #r = API.request('statuses/update', {'status': text})
+        #print(r.response)
         print('---------------------------------')
 
 
