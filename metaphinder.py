@@ -103,9 +103,11 @@ def post_tweet():
     print(datetime.today().isoformat())
 
     text = False
-    while not text:
+    attempts = 0
+    while not text and attempts < 10:
+        attempts += 1
         adjective = get_adjective()
-        print 'attempting to use adjective: ' + adjective
+        print('attempting to use adjective: ' + adjective)
         text = build_metaphor(adjective)
         if not text:
             # poor man's rate limiting
