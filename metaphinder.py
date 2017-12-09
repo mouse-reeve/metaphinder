@@ -39,7 +39,7 @@ def build_metaphor(adjective):
 
         # detect a "my/the __ is green" pattern
         articles = r'\b|\b'.join(['my', 'his', 'her', 'a', 'an', 'the'])
-        regex = re.compile(r'(\b%s\b) ([a-z\s]{1,20}) %s' % (articles, prompt),
+        regex = re.compile(r'(\b%s\b) ([a-z\s]{1,15}) %s' % (articles, prompt),
                            re.I)
         match = re.search(regex, text)
         if match and len(match.groups()) > 1:
