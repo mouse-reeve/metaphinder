@@ -10,6 +10,9 @@ def check_blacklist(sentence):
             return True
     return False
 
+# ---------------------------------------
+# Abandon all hope, ye who read past here
+# ---------------------------------------
 
 blacklist = [
     "2g1c",
