@@ -129,8 +129,8 @@ def post_tweet():
     if text:
         print(text)
         print('--------- posting tweet ---------')
-        #r = API.request('statuses/update', {'status': text})
-        #print(r.response)
+        r = API.request('statuses/update', {'status': text})
+        print(r.response)
         print('---------------------------------')
 
 
