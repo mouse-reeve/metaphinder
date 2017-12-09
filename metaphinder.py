@@ -95,7 +95,7 @@ def get_adjectives():
     data = {
         'hasDictionaryDef': True,
         'includePartOfSpeech': 'adjective',
-        'minCorpusCount': 10,
+        'minCorpusCount': 1,
         'maxCorpusCount': -1,
         'minDictionaryCount': 1,
         'maxDictionaryCount': -1,
