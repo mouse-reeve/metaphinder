@@ -4,7 +4,7 @@ import json
 import random
 import re
 import settings
-import sys
+import time
 from urllib.parse import urlencode
 from urllib.request import Request, urlopen
 
@@ -16,7 +16,6 @@ API = TwitterAPI(settings.API_KEY, settings.API_SECRET,
 
 def build_metaphor(adjective):
     ''' create a comparison sentence based on tweets '''
-    print(adjective)
     # pick an adjective around which to build the comparison
     prompt = 'is %s' % adjective
 
@@ -50,7 +49,6 @@ def build_metaphor(adjective):
         nouns = list(set(nouns))
         if len(nouns) == 2:
             break
-    print(nouns)
 
     # build the sentence
     sentences = [
@@ -72,7 +70,6 @@ def build_metaphor(adjective):
             the2=nouns[1][0].lower(),
             noun2=nouns[1][1],
             adj=adjective)
-        print(result)
         return result
 
     return False
@@ -102,21 +99,24 @@ def get_adjective():
 
 def post_tweet():
     ''' load the text and post to twitter '''
-    print('--------- creating metaphor --------')
+    print('------- creating metaphor -------')
     print(datetime.today().isoformat())
 
-    text = build_metaphor('green')
+    text = False
+    while not text:
+        adjective = get_adjective()
+        print 'attempting to use adjective: ' + adjective
+        text = build_metaphor(adjective)
+        if not text:
+            # poor man's rate limiting
+            time.sleep(2)
     print(text)
 
     print('--------- posting tweet --------')
     r = API.request('statuses/update', {'status': text})
     print(r.response)
+    print('--------------------------------')
 
 
 if __name__ == '__main__':
-    #post_tweet()
-    try:
-        input_adjective = sys.argv[1]
-    except IndexError:
-        input_adjective = get_adjective()
-    build_metaphor(input_adjective)
+    post_tweet()
