@@ -32,7 +32,7 @@ def build_metaphor(adjective):
     verbs = r'\b|\b'.join(verbs)
     exclude = r'\b|\b'.join(['who', 'that', 'but'])
     regex = re.compile(
-        r'(\b%s\b) (((?!\b%s\b).){1,15}) (\b%s\b) %s' % \
+        r'(\b%s\b) (((?!\b%s\b)[a-z\s-]){1,15}) (\b%s\b) %s' % \
                 (articles, exclude, verbs, adjective),
         re.I)
     used_nouns = []
