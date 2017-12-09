@@ -303,6 +303,7 @@ blacklist = [
     "shemale",
     "shibari",
     "shitblimp",
+    "shit",
     "shota",
     "shrimping",
     "skeet",
