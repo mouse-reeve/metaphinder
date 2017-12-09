@@ -1,3 +1,3 @@
 cd ~/metaphinder
-source venv/bin activate
+source venv/bin/activate
 python metaphinder.py
