@@ -16,7 +16,7 @@ API = TwitterAPI(settings.API_KEY, settings.API_SECRET,
 def build_metaphor(adjective):
     ''' create a comparison sentence based on tweets '''
     # pick an adjective around which to build the comparison
-    verbs = ['is', 'was', 'are']
+    verbs = ['is', 'was', 'are', 'were', 'will be']
     prompt = ' OR '.join('"%s %s"' % (v, adjective) for v in verbs)
 
     nouns = []
@@ -28,7 +28,7 @@ def build_metaphor(adjective):
         'result_type': 'recent',
     })
 
-    articles = r'\b|\b'.join(['my', 'his', 'her', 'a', 'an', 'the'])
+    articles = r'\b|\b'.join(['my', 'his', 'your', 'her', 'a', 'an', 'the'])
     verbs = r'\b|\b'.join(verbs)
     exclude = r'\b|\b'.join(['who', 'that', 'but'])
     regex = re.compile(
