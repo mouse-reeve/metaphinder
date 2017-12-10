@@ -65,12 +65,12 @@ def build_metaphor(adjective):
             break
 
     # build the sentence
-    sentences = ['{the1} {noun1} {is1} as {adj} as {the2} {noun2}'] * 5 + \
-        ['{the1} {noun1} {is1} like {the2} {noun2} -- {adj}'] * 5 + \
-        ['{the1} {noun1} {is1} like {the2} {noun2}: {adj}'] * 5 + \
-        ['{the1} {noun1} {is1} {adj} like {the2} {noun2}'] * 3 + \
-        ['{the1} {noun1} {is1} {the2} {noun2}, {the2} %s{adj} {noun2}' % \
-            random.choice(['eternally ', 'ever-', 'always-'])]
+    sentences = [
+        '{the1} {noun1} {is1} like {the2} {noun2} -- {adj}',
+        '{the1} {noun1} {is1} like {the2} {noun2}: {adj}',
+        '{the1} {noun1} {is1} as {adj} as {the2} {noun2}',
+        '{the1} {noun1} {is1} {adj} like {the2} {noun2}',
+    ]
 
     if len(nouns) >= 2:
         # prioritize definite articles
