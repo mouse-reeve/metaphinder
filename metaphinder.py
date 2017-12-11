@@ -55,14 +55,14 @@ def build_metaphor(adjective):
 
             # detect duplicate entries to avoid super common things like
             # "my heart is broken" over and over
-            if len(match.groups()) < 4 or groups[1] in used_nouns:
+            if len(match.groups()) < 4 or groups[1].lower() in used_nouns:
                 continue
             nouns.append({
                 'the': groups[0],
                 'noun': groups[1],
                 'is': groups[3],
             })
-            used_nouns.append(groups[1])
+            used_nouns.append(groups[1].lower())
 
         if len(nouns) == 2:
             break
