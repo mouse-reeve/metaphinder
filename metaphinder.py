@@ -109,7 +109,7 @@ def get_adjectives():
     response = urlopen(Request(
         'http://api.wordnik.com:80/v4/words.json/randomWords?' + params))
     response = json.loads(response.read().decode("utf-8"))
-    adjectives = [r['word'] for r in response]
+    adjectives = [r['word'] for r in response if r['word'][-2:] != 'er']
     return adjectives
 
 
