@@ -388,4 +388,5 @@ blacklist = [
     'molest',
     'kkk',
     'moore',
+    'arab',
 ]
