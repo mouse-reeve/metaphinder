@@ -384,6 +384,7 @@ blacklist = [
     "hillary",
     "cuck",
     "retard",
+    "retarted",
     "clinton",
     'molest',
     'kkk',

@@ -32,8 +32,8 @@ def build_metaphor(adjective):
     articles = r'\b|\b'.join(['my', 'his', 'your', 'her', 'a', 'an', 'the'])
     verbs = r'\b|\b'.join(verbs)
     exclude = r'\b|\b'.join(
-        ['who', 'that', 'which', 'but',
-         'we', 'she', 'he', 'they', 'I'])
+        ['who', 'that', 'which', 'but', 'it', 'whether', 'if',
+         'we', 'she', 'he', 'they', 'I', 'you'])
     regex = re.compile(
         r'(\b%s\b) (((?!\b%s\b)[a-z\s-]){1,15}) (\b%s\b) %s' % \
                 (articles, exclude, verbs, adjective),
