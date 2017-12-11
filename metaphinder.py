@@ -4,6 +4,7 @@ import json
 import random
 import re
 import settings
+import time
 from urllib.parse import urlencode
 from urllib.request import Request, urlopen
 
@@ -113,26 +114,25 @@ def get_adjectives():
     return adjectives
 
 
-def post_tweet():
+def fill_queue():
     ''' load the text and post to twitter '''
     print('------- creating metaphor -------')
     print(datetime.today().isoformat())
 
+    queue = json.load(open('queue.json'))
     text = False
     adjectives = get_adjectives()
     for adjective in adjectives:
         print('attempting to use adjective: ' + adjective)
         text = build_metaphor(adjective)
         if text:
-            break
+            print(text)
+            queue.append(text)
+        time.sleep(1)
 
-    if text:
-        print(text)
-        print('--------- posting tweet ---------')
-        r = API.request('statuses/update', {'status': text})
-        print(r.response)
-        print('---------------------------------')
+    json.dump(queue, open('queue.json', 'w'))
+    print('---------------------------------')
 
 
 if __name__ == '__main__':
-    post_tweet()
+    fill_queue()
