@@ -11,4 +11,4 @@ queue = json.load(open('queue.json'))
 text = queue[0]
 r = API.request('statuses/update', {'status': text})
 print(r.response)
-json.dump(queue, open('queue.json', 'w'))
+json.dump(queue[1:], open('queue.json', 'w'))
