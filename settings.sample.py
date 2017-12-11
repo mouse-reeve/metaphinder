@@ -6,3 +6,5 @@ ACCESS_TOKEN = ''
 ACCESS_SECRET = ''
 
 WORDNIK_KEY = ''
+
+FILEPATH = ''

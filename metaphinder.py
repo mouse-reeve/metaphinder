@@ -121,7 +121,7 @@ def fill_queue():
     print('------- creating metaphor -------')
     print(datetime.today().isoformat())
 
-    queue = json.load(open('queue.json'))
+    queue = json.load(open('%s/queue.json' % settings.FILEPATH))
     text = False
     adjectives = get_adjectives()
     for adjective in adjectives:
@@ -132,7 +132,7 @@ def fill_queue():
             queue.append(text)
         time.sleep(1)
 
-    json.dump(queue, open('queue.json', 'w'))
+    json.dump(queue, open('%s/queue.json' % settings.FILEPATH, 'w'))
     print('---------------------------------')
 
 
