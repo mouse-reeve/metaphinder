@@ -385,4 +385,7 @@ blacklist = [
     "cuck",
     "retard",
     "clinton",
+    'molest',
+    'kkk',
+    'moore',
 ]
