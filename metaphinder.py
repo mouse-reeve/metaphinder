@@ -75,6 +75,8 @@ def build_metaphor(adjective):
         '{the1} {noun1} {is1} {adj} like {the2} {noun2}',
         '{the1} {noun1}, like {the2} {noun2}, {is1} {adj}',
         'like {the2} {noun2}, {the1} {noun1} {is1} {adj}',
+        '{the1} {noun1} {is1} {the2} {adj} {noun2}',
+        '{the1} {noun1} {is1} {the2} {noun2} -- {adj}',
     ]
 
     if len(nouns) >= 2:
@@ -97,7 +99,7 @@ def build_metaphor(adjective):
 
 def fix_case(word):
     ''' lowercase words that aren't all caps '''
-    if word.upper() == word:
+    if word == 'I':
         return word
     return word.lower()
 
@@ -113,7 +115,7 @@ def get_adjectives():
         'maxDictionaryCount': -1,
         'minLength': 4,
         'maxLength': -1,
-        'limit': 20,
+        'limit': 50,
         'api_key': settings.WORDNIK_KEY
     }
 
