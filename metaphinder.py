@@ -97,7 +97,7 @@ def build_metaphor(adjective):
 
 def fix_case(word):
     ''' lowercase words that aren't all caps '''
-    if word.upper() == word():
+    if word.upper() == word:
         return word
     return word.lower()
 
