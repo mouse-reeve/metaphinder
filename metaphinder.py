@@ -73,7 +73,7 @@ def build_metaphor(adjective):
         '{the1} {noun1} {is1} like {the2} {noun2}: {adj}',
         '{the1} {noun1} {is1} as {adj} as {the2} {noun2}',
         '{the1} {noun1} {is1} {adj} like {the2} {noun2}',
-        '{the1} {noun1}, like {the2} {noun2} {is1} {adj}',
+        '{the1} {noun1}, like {the2} {noun2}, {is1} {adj}',
         'like {the2} {noun2}, {the1} {noun1} {is1} {adj}',
     ]
 
@@ -84,15 +84,22 @@ def build_metaphor(adjective):
             nouns = nouns[::-1]
 
         result = random.choice(sentences).format(
-            the1=nouns[0]['the'],
+            the1=fix_case(nouns[0]['the']),
             noun1=nouns[0]['noun'],
             is1=nouns[0]['is'],
-            the2=nouns[1]['the'].lower(),
+            the2=fix_case(nouns[1]['the']),
             noun2=nouns[1]['noun'],
             is2=nouns[1]['is'],
             adj=adjective)
         return result
     return False
+
+
+def fix_case(word):
+    ''' lowercase words that aren't all caps '''
+    if word.upper() == word():
+        return word
+    return word.lower()
 
 
 def get_adjectives():
