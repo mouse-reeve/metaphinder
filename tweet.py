@@ -10,5 +10,6 @@ queue = json.load(open('%s/queue.json' % settings.FILEPATH))
 
 text = queue[0]
 r = API.request('statuses/update', {'status': text})
-print(r.response)
+if r.status_code != 200:
+    print(r.response)
 json.dump(queue[1:], open('%s/queue.json' % settings.FILEPATH, 'w'))
