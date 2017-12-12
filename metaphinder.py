@@ -77,8 +77,8 @@ def build_metaphor(adjective):
 
     if len(nouns) >= 2:
         # prioritize definite articles
-        if nouns[0]['the'] in ['a', 'an'] or \
-                nouns[1]['the'] in ['my', 'his', 'her']:
+        if nouns[0]['the'].lower() in ['a', 'an'] or \
+                nouns[1]['the'].lower() in ['my', 'his', 'her']:
             nouns = nouns[::-1]
 
         result = random.choice(sentences).format(
