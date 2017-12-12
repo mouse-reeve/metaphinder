@@ -73,6 +73,8 @@ def build_metaphor(adjective):
         '{the1} {noun1} {is1} like {the2} {noun2}: {adj}',
         '{the1} {noun1} {is1} as {adj} as {the2} {noun2}',
         '{the1} {noun1} {is1} {adj} like {the2} {noun2}',
+        '{the1} {noun1}, like {the2} {noun2} {is1} {adj}',
+        'like {the2} {noun2}, {the1} {noun1} {is1} {adj}',
     ]
 
     if len(nouns) >= 2:
