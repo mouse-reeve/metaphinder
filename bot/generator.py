@@ -130,7 +130,7 @@ def get_adjectives():
     data = {
         'hasDictionaryDef': True,
         'includePartOfSpeech': 'adjective',
-        'minCorpusCount': 1,
+        'minCorpusCount': settings.WORDNIK_CORPUS_COUNT,
         'maxCorpusCount': -1,
         'minDictionaryCount': 1,
         'maxDictionaryCount': -1,
