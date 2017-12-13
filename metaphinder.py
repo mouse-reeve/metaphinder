@@ -29,11 +29,16 @@ def build_metaphor(adjective):
         'result_type': 'recent',
     })
 
-    articles = r'\b|\b'.join(['my', 'his', 'your', 'her', 'a', 'an', 'the'])
+    articles = r'\b|\b'.join([
+        'my', 'your',
+        'his', 'her',
+        'a', 'an',
+        'the', 'this'
+    ])
     verbs = r'\b|\b'.join(verbs)
     exclude = r'\b|\b'.join(
         ['who', 'that', 'which', 'but', 'it', 'whether', 'if',
-         'we', 'she', 'he', 'they', 'I', 'you'])
+         'we', 'she', 'he', 'they', 'I', 'you', 'name'])
     regex = re.compile(
         r'(\b%s\b) (((?!\b%s\b)[a-z\s-]){1,15}) (\b%s\b) %s' % \
                 (articles, exclude, verbs, adjective),
