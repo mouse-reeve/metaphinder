@@ -13,16 +13,16 @@ except:
 
 queue = json.load(open('%s/queue.json' % settings.FILEPATH))
 
-data = queue[0]
+text = queue[0]
 
-if data:
+if text:
     if API:
-        r = API.request('statuses/update', data)
+        r = API.request('statuses/update', {'status': text})
 
         if r.status_code != 200:
             print(r.response)
     else:
         print('----- API unavailable -----')
-        print(data)
+        print(text)
 
 json.dump(queue[1:], open('%s/queue.json' % settings.FILEPATH, 'w'))
