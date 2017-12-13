@@ -67,7 +67,14 @@ def format_article(word):
 def get_nouns(adjective):
     ''' search twitter for sentences using the given adjective '''
     verbs = ['is', 'was', 'are', 'were', 'will be']
+    articles = [
+        'my', 'your',
+        'his', 'her',
+        'a', 'an',
+        'the', 'this'
+    ]
     prompt = ' OR '.join('"%s %s"' % (v, adjective) for v in verbs)
+    prompt += ' OR ' + ' OR '.join('%s %s' % (a, adjective) for a in articles)
 
     nouns = []
     # find structurally compatible tweets that use the adjective
@@ -78,20 +85,22 @@ def get_nouns(adjective):
         'result_type': 'recent',
     })
 
-    articles = r'\b|\b'.join([
-        'my', 'your',
-        'his', 'her',
-        'a', 'an',
-        'the', 'this'
-    ])
+    articles = r'\b|\b'.join(articles)
     verbs = r'\b|\b'.join(verbs)
     exclude = r'\b|\b'.join(
         ['who', 'that', 'which', 'but', 'it', 'whether', 'if',
          'we', 'she', 'he', 'they', 'I', 'you', 'name'])
+
+    # matches "the dog is cute"
     regex = re.compile(
         r'(\b%s\b) (((?!\b%s\b)[a-z\s-]){1,15}) (\b%s\b) %s' % \
                 (articles, exclude, verbs, adjective),
         re.I)
+
+    # matches "the cute dog"
+    secondary_regex = re.compile(
+        r'(\b%s\b) %s (((?!\b%s\b|\bone\b)[a-z]){1,15}) ' % \
+                (articles, adjective, exclude), re.I)
     used_nouns = []
     for tweet in tweets:
         if not 'text' in tweet:
@@ -115,6 +124,20 @@ def get_nouns(adjective):
                 'the': groups[0],
                 'noun': groups[1],
                 'is': groups[3],
+            })
+            used_nouns.append(groups[1].lower())
+        elif re.search(secondary_regex, text):
+            # we don't get a verb with this pattern, so it's not ideal
+            groups = match.groups()
+            if groups[1].lower() in used_nouns:
+                continue
+
+            # kinda crude plural detection
+            verb = 'are' if groups[1][-1] == 's' else 'is'
+            nouns.append({
+                'the': groups[0],
+                'noun': groups[1],
+                'is': verb,
             })
             used_nouns.append(groups[1].lower())
 
