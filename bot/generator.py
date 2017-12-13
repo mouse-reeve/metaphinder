@@ -45,16 +45,25 @@ def get_tweet(adjective):
     for i in range(0, 2):
         if nouns[i]['the'].lower() == 'the' and nouns[i]['noun'][-1] == 's':
             nouns[i]['the'] = ''
+        else:
+            nouns[i]['the'] = format_article(nouns[i]['the'])
 
     result = random.choice(sentences).format(
-        the1=format_article(nouns[0]['the']),
+        the1=nouns[0]['the'],
         noun1=nouns[0]['noun'],
         is1=nouns[0]['is'],
-        the2=format_article(nouns[1]['the']),
+        the2=nouns[1]['the'],
         noun2=nouns[1]['noun'],
         is2=nouns[1]['is'],
         adj=adjective)
     return result
+
+
+def format_article(word):
+    ''' tidy up pronoun/article capitalization '''
+    if word != 'I':
+        word = word.lower()
+    return word + ' '
 
 
 def get_nouns(adjective):
@@ -114,13 +123,6 @@ def get_nouns(adjective):
         if len(nouns) == 2:
             break
     return nouns
-
-
-def format_article(word):
-    ''' lowercase words that aren't all caps '''
-    if word == 'I':
-        return word
-    return word.lower() + ' '
 
 
 def get_adjectives():
