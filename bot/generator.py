@@ -32,8 +32,6 @@ def get_tweet(adjective):
         '{the1}{noun1} {is1} {adj} like {the2}{noun2}',
         '{the1}{noun1}, like {the2}{noun2}, {is1} {adj}',
         'like {the2}{noun2}, {the1}{noun1} {is1} {adj}',
-        '{the1}{noun1} {is1} {the2}{adj} {noun2}',
-        '{the1}{noun1} {is1} {the2}{noun2} -- {adj}',
     ]
 
     # prioritize definite articles
@@ -130,6 +128,7 @@ def get_adjectives():
     data = {
         'hasDictionaryDef': True,
         'includePartOfSpeech': 'adjective',
+        'excludePartOfSpeech': 'verb',
         'minCorpusCount': settings.WORDNIK_CORPUS_COUNT,
         'maxCorpusCount': -1,
         'minDictionaryCount': 1,

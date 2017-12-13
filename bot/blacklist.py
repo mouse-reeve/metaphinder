@@ -390,4 +390,11 @@ blacklist = [
     'kkk',
     'moore',
     'arab',
+    'democrat',
+    'republican',
+    'nazi',
+    'gop',
+    'crazy',
+    'mueller',
+    'brexit',
 ]
