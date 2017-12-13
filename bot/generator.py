@@ -128,6 +128,7 @@ def get_nouns(adjective):
             used_nouns.append(groups[1].lower())
         elif re.search(secondary_regex, text):
             # we don't get a verb with this pattern, so it's not ideal
+            match = re.search(secondary_regex, text)
             groups = match.groups()
             if groups[1].lower() in used_nouns:
                 continue
