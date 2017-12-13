@@ -4,6 +4,12 @@
 .Python
 pip-selfcheck.json
 *.sass-cache
+buid/
+
+build/
+dist/
+*.egg-info
 
 venv/
 settings.py
+queue.json
