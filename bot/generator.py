@@ -76,7 +76,6 @@ def get_nouns(adjective):
     prompt = ' OR '.join('"%s %s"' % (v, adjective) for v in verbs)
     prompt += ' OR ' + ' OR '.join('%s %s' % (a, adjective) for a in articles)
 
-    nouns = []
     # find structurally compatible tweets that use the adjective
     tweets = API.request('search/tweets', {
         'q': prompt,
@@ -101,6 +100,9 @@ def get_nouns(adjective):
     secondary_regex = re.compile(
         r'(\b%s\b) %s (((?!\b%s\b|\bone\b)[a-z]){1,15}) ' % \
                 (articles, adjective, exclude), re.I)
+
+    nouns = []
+    secondary_nouns = [] # separate since these often suck
     used_nouns = []
     for tweet in tweets:
         if not 'text' in tweet:
@@ -135,7 +137,7 @@ def get_nouns(adjective):
 
             # kinda crude plural detection
             verb = 'are' if groups[1][-1] == 's' else 'is'
-            nouns.append({
+            secondary_nouns.append({
                 'the': groups[0],
                 'noun': groups[1],
                 'is': verb,
@@ -144,6 +146,7 @@ def get_nouns(adjective):
 
         if len(nouns) == 2:
             break
+    nouns += secondary_nouns
     return nouns
 
 
