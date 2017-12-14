@@ -137,6 +137,11 @@ def get_nouns(adjective):
 
             # kinda crude plural detection
             verb = 'are' if groups[1][-1] == 's' else 'is'
+            # fix a/an matching
+            if groups[0] == 'a' and groups[1][0] in 'aeiou':
+                groups[0] = 'an'
+            elif groups[0] == 'an' and groups[1][0] not in 'aeiou':
+                groups[0] = 'a'
             secondary_nouns.append({
                 'the': groups[0],
                 'noun': groups[1],
