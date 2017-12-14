@@ -98,7 +98,7 @@ def get_nouns(adjective):
 
     # matches "the cute dog"
     secondary_regex = re.compile(
-        r'(\b%s\b) %s (((?!\b%s\b|\bone\b)[a-z]){1,15}) ' % \
+        r'(\b%s\b) %s (((?!\b%s\b|\bone\b|\bof\b)[a-z]){1,15}) ' % \
                 (articles, adjective, exclude), re.I)
 
     nouns = []
@@ -137,13 +137,14 @@ def get_nouns(adjective):
 
             # kinda crude plural detection
             verb = 'are' if groups[1][-1] == 's' else 'is'
+            the = groups[0]
             # fix a/an matching
-            if groups[0] == 'a' and groups[1][0] in 'aeiou':
-                groups[0] = 'an'
-            elif groups[0] == 'an' and groups[1][0] not in 'aeiou':
-                groups[0] = 'a'
+            if the == 'a' and groups[1][0] in 'aeiou':
+                the = 'an'
+            elif the == 'an' and groups[1][0] not in 'aeiou':
+                the = 'a'
             secondary_nouns.append({
-                'the': groups[0],
+                'the': the,
                 'noun': groups[1],
                 'is': verb,
             })
