@@ -92,17 +92,11 @@ def get_nouns(adjective):
 
     # matches "the dog is cute"
     regex = re.compile(
-        r'(\b%s\b) (((?!\b%s\b)[a-z\s-]){1,15}) (\b%s\b) %s' % \
+        r'(\b%s\b) (((?!\b%s\b)[a-z\s-]){3,15}) (\b%s\b) %s' % \
                 (articles, exclude, verbs, adjective),
         re.I)
 
-    # matches "the cute dog"
-    secondary_regex = re.compile(
-        r'(\b%s\b) %s (((?!\b%s\b|\bone\b|\bof\b)[a-z]){1,15}) ' % \
-                (articles, adjective, exclude), re.I)
-
     nouns = []
-    secondary_nouns = [] # separate since these often suck
     used_nouns = []
     for tweet in tweets:
         if not 'text' in tweet:
@@ -128,31 +122,10 @@ def get_nouns(adjective):
                 'is': groups[3],
             })
             used_nouns.append(groups[1].lower())
-        elif re.search(secondary_regex, text):
-            # we don't get a verb with this pattern, so it's not ideal
-            match = re.search(secondary_regex, text)
-            groups = match.groups()
-            if groups[1].lower() in used_nouns:
-                continue
-
-            # kinda crude plural detection
-            verb = 'are' if groups[1][-1] == 's' else 'is'
-            the = groups[0]
-            # fix a/an matching
-            if the == 'a' and groups[1][0] in 'aeiou':
-                the = 'an'
-            elif the == 'an' and groups[1][0] not in 'aeiou':
-                the = 'a'
-            secondary_nouns.append({
-                'the': the,
-                'noun': groups[1],
-                'is': verb,
-            })
-            used_nouns.append(groups[1].lower())
 
         if len(nouns) == 2:
             break
-    nouns += secondary_nouns
+
     return nouns
 
 
