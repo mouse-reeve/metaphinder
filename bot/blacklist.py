@@ -397,4 +397,8 @@ blacklist = [
     'crazy',
     'mueller',
     'brexit',
+    'jew',
+    'right',
+    'left',
+    'blacks',
 ]
